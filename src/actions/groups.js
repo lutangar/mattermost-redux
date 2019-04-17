@@ -163,3 +163,25 @@ export function getGroup(id: string): ActionFunc {
         ],
     });
 }
+
+export function getGroupsNotAssociatedToTeam(teamId: string, page: number, perPage: number = General.PROFILE_CHUNK_SIZE): ActionFunc {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
+        let groups: null;
+        try {
+            groups = await Client4.getGroupsNotAssociatedToTeam(teamId, page, perPage);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        dispatch(batchActions([
+            {
+                type: GroupTypes.RECEIVED_GROUPS,
+                data: groups,
+            },
+        ]), getState);
+
+        return {data: groups};
+    };
+}

@@ -135,6 +135,13 @@ function groups(state = {}, action) {
             [action.data.id]: action.data,
         };
     }
+    case GroupTypes.RECEIVED_GROUPS: {
+        const nextState = {...state};
+        for (const group of action.data) {
+            nextState[group.id] = group;
+        }
+        return nextState;
+    }
     default:
         return state;
     }

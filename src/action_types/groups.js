@@ -32,4 +32,9 @@ export default keyMirror({
     GET_GROUP_SUCCESS: null,
     GET_GROUP_FAILURE: null,
     RECEIVED_GROUP: null,
+
+    GET_GROUPS_REQUEST: null,
+    GET_GROUPS_SUCCESS: null,
+    GET_GROUPS_FAILURE: null,
+    RECEIVED_GROUPS: null,
 });

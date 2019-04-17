@@ -2588,6 +2588,15 @@ export default class Client4 {
         );
     };
 
+    getGroupsNotAssociatedToTeam = async (teamId, page = 0, perPage = PER_PAGE_DEFAULT) => {
+        this.trackEvent('api', 'api_groups_get_not_associated_to_team', {team_id: teamId});
+
+        return this.doFetch(
+            `${this.getBaseRoute()}/groups${buildQueryString({not_associated_to_team: teamId, page, per_page: perPage})}`,
+            {method: 'get'}
+        );
+    };
+
     // Redirect Location
 
     getRedirectLocation = async (urlParam) => {
