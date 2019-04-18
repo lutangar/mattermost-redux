@@ -60,11 +60,33 @@ function getGroup(state: RequestStatusType = initialRequestState(), action: Gene
     );
 }
 
+function getGroupsNotAssociatedToTeam(state: RequestStatusType = initialRequestState(), action: GenericAction): RequestStatusType {
+    return handleRequest(
+        GroupTypes.GET_GROUPS_REQUEST,
+        GroupTypes.GET_GROUPS_SUCCESS,
+        GroupTypes.GET_GROUPS_FAILURE,
+        state,
+        action
+    );
+}
+
+function getAllGroupsAssociatedToTeam(state: RequestStatusType = initialRequestState(), action: GenericAction): RequestStatusType {
+    return handleRequest(
+        GroupTypes.GET_GROUPS_ASSOCIATED_TO_TEAM_REQUEST,
+        GroupTypes.GET_GROUPS_ASSOCIATED_TO_TEAM_SUCCESS,
+        GroupTypes.GET_GROUPS_ASSOCIATED_TO_TEAM_FAILURE,
+        state,
+        action
+    );
+}
+
 export default (combineReducers({
     linkGroupSyncable,
     unlinkGroupSyncable,
     getGroupSyncables,
     getGroupMembers,
     getGroup,
+    getGroupsNotAssociatedToTeam,
+    getAllGroupsAssociatedToTeam,
 }): (GroupsRequestsStatuses, GenericAction) => GroupsRequestsStatuses);
 

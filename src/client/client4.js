@@ -2588,11 +2588,18 @@ export default class Client4 {
         );
     };
 
-    getGroupsNotAssociatedToTeam = async (teamId, page = 0, perPage = PER_PAGE_DEFAULT) => {
-        this.trackEvent('api', 'api_groups_get_not_associated_to_team', {team_id: teamId});
+    getGroupsNotAssociatedToTeam = async (teamID, q = null, page = 0, perPage = PER_PAGE_DEFAULT) => {
+        this.trackEvent('api', 'api_groups_get_not_associated_to_team', {team_id: teamID});
 
         return this.doFetch(
-            `${this.getBaseRoute()}/groups${buildQueryString({not_associated_to_team: teamId, page, per_page: perPage})}`,
+            `${this.getBaseRoute()}/groups${buildQueryString({not_associated_to_team: teamID, page, per_page: perPage, q})}`,
+            {method: 'get'}
+        );
+    };
+
+    getAllGroupsAssociatedToTeam = async (teamID) => {
+        return this.doFetch(
+            `${this.getBaseRoute()}/teams/${teamID}/groups?paginate=false`,
             {method: 'get'}
         );
     };

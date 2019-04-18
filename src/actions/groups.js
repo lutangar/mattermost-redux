@@ -164,11 +164,14 @@ export function getGroup(id: string): ActionFunc {
     });
 }
 
-export function getGroupsNotAssociatedToTeam(teamId: string, page: number, perPage: number = General.PROFILE_CHUNK_SIZE): ActionFunc {
+export function getGroupsNotAssociatedToTeam(teamID: string, q: string = '', page: number = 0, perPage: number = General.PAGE_SIZE_DEFAULT): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
+
+        console.log('q', q);
+
         let groups: null;
         try {
-            groups = await Client4.getGroupsNotAssociatedToTeam(teamId, page, perPage);
+            groups = await Client4.getGroupsNotAssociatedToTeam(teamID, q, page, perPage);
         } catch (error) {
             forceLogoutIfNecessary(error, dispatch, getState);
             dispatch(logError(error));
@@ -178,7 +181,33 @@ export function getGroupsNotAssociatedToTeam(teamId: string, page: number, perPa
         dispatch(batchActions([
             {
                 type: GroupTypes.RECEIVED_GROUPS,
-                data: groups,
+                data: {groups},
+            },
+        ]), getState);
+
+        return {data: {groups}};
+    };
+}
+
+export function getAllGroupsAssociatedToTeam(teamID: string): ActionFunc {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
+        let groups: null;
+        try {
+            groups = await Client4.getAllGroupsAssociatedToTeam(teamID);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        dispatch(batchActions([
+            {
+                type: GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM,
+                data: {groups, teamID},
+            },
+            {
+                type: GroupTypes.RECEIVED_GROUPS,
+                data: {groups},
             },
         ]), getState);
 

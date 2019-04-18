@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import {combineReducers} from 'redux';
-import {ChannelTypes, TeamTypes, UserTypes, SchemeTypes} from 'action_types';
+import {ChannelTypes, TeamTypes, UserTypes, SchemeTypes, GroupTypes} from 'action_types';
 import {teamListToMap} from 'utils/team_utils';
 
 function currentTeamId(state = '', action) {
@@ -320,6 +320,25 @@ function stats(state = {}, action) {
     }
 }
 
+function groupsAssociatedToTeam(state = {}, action) {
+    switch (action.type) {
+    case GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM: {
+        const {teamID} = action.data;
+        const nextState = {...state};
+        for (const group of action.data.groups) {
+            if (nextState[teamID]) {
+                nextState[teamID].push(group.id);
+            } else {
+                nextState[teamID] = [group.id];
+            }
+        }
+        return nextState;
+    }
+    default:
+        return state;
+    }
+}
+
 function updateTeamMemberSchemeRoles(state, action) {
     const {teamId, userId, isSchemeUser, isSchemeAdmin} = action.data;
     const team = state[teamId];
@@ -358,4 +377,6 @@ export default combineReducers({
 
     // object where every key is the team id and has an object with the team stats
     stats,
+
+    groupsAssociatedToTeam,
 });
