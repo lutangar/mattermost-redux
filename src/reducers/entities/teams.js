@@ -327,9 +327,9 @@ function groupsAssociatedToTeam(state = {}, action) {
         const nextState = {...state};
         for (const group of action.data.groups) {
             if (nextState[teamID]) {
-                nextState[teamID].push(group.id);
+                nextState[teamID].add(group.id);
             } else {
-                nextState[teamID] = [group.id];
+                nextState[teamID] = new Set([group.id]);
             }
         }
         return nextState;

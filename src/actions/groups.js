@@ -166,9 +166,6 @@ export function getGroup(id: string): ActionFunc {
 
 export function getGroupsNotAssociatedToTeam(teamID: string, q: string = '', page: number = 0, perPage: number = General.PAGE_SIZE_DEFAULT): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
-
-        console.log('q', q);
-
         let groups: null;
         try {
             groups = await Client4.getGroupsNotAssociatedToTeam(teamID, q, page, perPage);
