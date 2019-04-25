@@ -51,8 +51,8 @@ export function getTeamGroupIDSet(state, teamID) {
 }
 
 export const getGroupsNotAssociatedToTeam = createSelector(
-    getAllGroups, 
-    (state, teamID) => getTeamGroupIDSet(state, teamID), 
+    getAllGroups,
+    (state, teamID) => getTeamGroupIDSet(state, teamID),
     (allGroups, teamGroupIDSet) => {
         return Object.entries(allGroups).filter(([groupID]) => !teamGroupIDSet.has(groupID)).map((entry) => entry[1]);
     }

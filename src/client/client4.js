@@ -2591,7 +2591,7 @@ export default class Client4 {
     getGroupsNotAssociatedToTeam = async (teamID, q = '', page = 0, perPage = PER_PAGE_DEFAULT) => {
         this.trackEvent('api', 'api_groups_get_not_associated_to_team', {team_id: teamID});
         return this.doFetch(
-            `${this.getBaseRoute()}/groups${buildQueryString({not_associated_to_team: teamID, page, per_page: perPage, q})}`,
+            `${this.getBaseRoute()}/groups${buildQueryString({not_associated_to_team: teamID, page, per_page: perPage, q, include_member_count: true})}`,
             {method: 'get'}
         );
     };
