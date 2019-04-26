@@ -211,3 +211,29 @@ export function getAllGroupsAssociatedToTeam(teamID: string): ActionFunc {
         return {data: groups};
     };
 }
+
+export function getGroupsAssociatedToTeam(teamID: string, q: string = '', page: number = 0, perPage: number = General.PAGE_SIZE_DEFAULT): ActionFunc {
+    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
+        let groups: null;
+        try {
+            groups = await Client4.getGroupsAssociatedToTeam(teamID, q, page, perPage);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        dispatch(batchActions([
+            {
+                type: GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM,
+                data: {groups, teamID},
+            },
+            {
+                type: GroupTypes.RECEIVED_GROUPS,
+                data: {groups},
+            },
+        ]), getState);
+
+        return {data: {groups}};
+    };
+}

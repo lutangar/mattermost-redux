@@ -57,3 +57,11 @@ export const getGroupsNotAssociatedToTeam = createSelector(
         return Object.entries(allGroups).filter(([groupID]) => !teamGroupIDSet.has(groupID)).map((entry) => entry[1]);
     }
 );
+
+export const getGroupsAssociatedToTeam = createSelector(
+    getAllGroups,
+    (state, teamID) => getTeamGroupIDSet(state, teamID),
+    (allGroups, teamGroupIDSet) => {
+        return Object.entries(allGroups).filter(([groupID]) => teamGroupIDSet.has(groupID)).map((entry) => entry[1]);
+    }
+);
