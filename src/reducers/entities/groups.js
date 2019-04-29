@@ -69,6 +69,9 @@ function syncables(state = {}, action) {
         };
     }
     case GroupTypes.UNLINKED_GROUP_TEAM: {
+        if (!state[action.data.group_id]) {
+            return state;
+        }
         const nextTeams = state[action.data.group_id].teams.slice();
 
         const index = nextTeams.findIndex((groupTeam) => {

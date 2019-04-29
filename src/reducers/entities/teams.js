@@ -332,10 +332,26 @@ function groupsAssociatedToTeam(state = {}, action) {
         nextState[teamID] = Array.from(associatedGroupIDs);
         return nextState;
     }
-    // case GroupTypes.RECEIVED_ALL_GROUPS_ASSOCIATED_TO_TEAM: {
-    // }
-    // case GroupTypes.RECEIVED_GROUPS_NOT_ASSOCIATED_TO_TEAM: {
-    // }
+    case GroupTypes.RECEIVED_ALL_GROUPS_ASSOCIATED_TO_TEAM: {
+        const {teamID, groups} = action.data;
+        const nextState = {...state};
+        const associatedGroupIDs = new Set([]);
+        for (const group of groups) {
+            associatedGroupIDs.add(group.id);
+        }
+        nextState[teamID] = Array.from(associatedGroupIDs);
+        return nextState;
+    }
+    case GroupTypes.RECEIVED_GROUPS_NOT_ASSOCIATED_TO_TEAM: {
+        const {teamID, groups} = action.data;
+        const nextState = {...state};
+        const associatedGroupIDs = new Set(state[teamID] || []);
+        for (const group of groups) {
+            associatedGroupIDs.delete(group.id);
+        }
+        nextState[teamID] = Array.from(associatedGroupIDs);
+        return nextState;
+    }
     default:
         return state;
     }

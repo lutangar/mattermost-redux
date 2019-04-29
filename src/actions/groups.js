@@ -30,9 +30,12 @@ export function linkGroupSyncable(groupID: string, syncableID: string, syncableT
             return {error};
         }
 
+        const dispatches = [];
+
         let type;
         switch (syncableType) {
         case Groups.SYNCABLE_TYPE_TEAM:
+            dispatches.push({type: GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM, data: {teamID: syncableID, groups: [{id: groupID}]}});
             type = GroupTypes.LINKED_GROUP_TEAM;
             break;
         case Groups.SYNCABLE_TYPE_CHANNEL:
@@ -42,10 +45,10 @@ export function linkGroupSyncable(groupID: string, syncableID: string, syncableT
             console.warn(`unhandled syncable type ${syncableType}`); // eslint-disable-line no-console
         }
 
-        dispatch(batchActions([
-            {type: GroupTypes.LINK_GROUP_SYNCABLE_SUCCESS, data: null},
-            {type, data},
-        ]));
+        dispatches.push({type: GroupTypes.LINK_GROUP_SYNCABLE_SUCCESS, data: null});
+        dispatches.push({type, data});
+
+        dispatch(batchActions(dispatches));
 
         return {data: true};
     };
@@ -66,12 +69,15 @@ export function unlinkGroupSyncable(groupID: string, syncableID: string, syncabl
             return {error};
         }
 
+        const dispatches = [];
+
         let type;
         const data = {group_id: groupID, syncable_id: syncableID};
         switch (syncableType) {
         case Groups.SYNCABLE_TYPE_TEAM:
             type = GroupTypes.UNLINKED_GROUP_TEAM;
             data.syncable_id = syncableID;
+            dispatches.push({type: GroupTypes.RECEIVED_GROUPS_NOT_ASSOCIATED_TO_TEAM, data: {teamID: syncableID, groups: [{id: groupID}]}});
             break;
         case Groups.SYNCABLE_TYPE_CHANNEL:
             type = GroupTypes.UNLINKED_GROUP_CHANNEL;
@@ -81,10 +87,10 @@ export function unlinkGroupSyncable(groupID: string, syncableID: string, syncabl
             console.warn(`unhandled syncable type ${syncableType}`); // eslint-disable-line no-console
         }
 
-        dispatch(batchActions([
-            {type: GroupTypes.UNLINK_GROUP_SYNCABLE_SUCCESS, data: null},
-            {type, data},
-        ]));
+        dispatches.push({type: GroupTypes.UNLINK_GROUP_SYNCABLE_SUCCESS, data: null});
+        dispatches.push({type, data});
+
+        dispatch(batchActions(dispatches));
 
         return {data: true};
     };
