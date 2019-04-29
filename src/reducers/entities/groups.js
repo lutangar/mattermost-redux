@@ -140,7 +140,7 @@ function groups(state = {}, action) {
     }
     case GroupTypes.RECEIVED_GROUPS: {
         const nextState = {...state};
-        for (const group of action.data.groups) {
+        for (const group of action.data) {
             nextState[group.id] = group;
         }
         return nextState;

@@ -171,75 +171,50 @@ export function getGroup(id: string): ActionFunc {
 }
 
 export function getGroupsNotAssociatedToTeam(teamID: string, q: string = '', page: number = 0, perPage: number = General.PAGE_SIZE_DEFAULT): ActionFunc {
-    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
-        let groups: null;
-        try {
-            groups = await Client4.getGroupsNotAssociatedToTeam(teamID, q, page, perPage);
-        } catch (error) {
-            forceLogoutIfNecessary(error, dispatch, getState);
-            dispatch(logError(error));
-            return {error};
-        }
-
-        dispatch(batchActions([
-            {
-                type: GroupTypes.RECEIVED_GROUPS,
-                data: {groups},
-            },
-        ]), getState);
-
-        return {data: {groups}};
-    };
+    return bindClientFunc({
+        clientFunc: Client4.getGroupsNotAssociatedToTeam,
+        onRequest: GroupTypes.GET_GROUPS_NOT_ASSOCIATED_TO_TEAM_REQUEST,
+        onSuccess: [GroupTypes.RECEIVED_GROUPS, GroupTypes.GET_GROUPS_NOT_ASSOCIATED_TO_TEAM_SUCCESS],
+        onFailure: GroupTypes.GET_GROUPS_NOT_ASSOCIATED_TO_TEAM_FAILURE,
+        params: [
+            teamID,
+            q,
+            page,
+            perPage,
+        ],
+    });
 }
 
 export function getAllGroupsAssociatedToTeam(teamID: string): ActionFunc {
-    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
-        let groups: null;
-        try {
-            const response = await Client4.getAllGroupsAssociatedToTeam(teamID);
-            groups = response.groups;
-        } catch (error) {
-            forceLogoutIfNecessary(error, dispatch, getState);
-            dispatch(logError(error));
-            return {error};
-        }
-
-        dispatch(batchActions([
-            {
-                type: GroupTypes.RECEIVED_ALL_GROUPS_ASSOCIATED_TO_TEAM,
-                data: {groups, teamID},
-            },
-        ]), getState);
-
-        return {data: groups};
-    };
+    return bindClientFunc({
+        clientFunc: async (param1) => {
+            const result = await Client4.getAllGroupsAssociatedToTeam(param1);
+            result.teamID = param1;
+            return result;
+        },
+        onRequest: GroupTypes.GET_ALL_GROUPS_ASSOCIATED_TO_TEAM_REQUEST,
+        onSuccess: [GroupTypes.RECEIVED_ALL_GROUPS_ASSOCIATED_TO_TEAM, GroupTypes.GET_ALL_GROUPS_ASSOCIATED_TO_TEAM_SUCCESS],
+        onFailure: GroupTypes.GET_ALL_GROUPS_ASSOCIATED_TO_TEAM_FAILURE,
+        params: [
+            teamID,
+        ],
+    });
 }
 
 export function getGroupsAssociatedToTeam(teamID: string, q: string = '', page: number = 0, perPage: number = General.PAGE_SIZE_DEFAULT): ActionFunc {
-    return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
-        let groups: null;
-        let totalGroupCount: null;
-        try {
-            const response = await Client4.getGroupsAssociatedToTeam(teamID, q, page, perPage);
-            groups = response.groups;
-            totalGroupCount = response.total_group_count;
-        } catch (error) {
-            forceLogoutIfNecessary(error, dispatch, getState);
-            dispatch(logError(error));
-            return {error};
-        }
-
-        dispatch(batchActions([
-            {
-                type: GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM,
-                data: {groups, teamID},
-            },
-            {
-                type: GroupTypes.RECEIVED_GROUPS,
-                data: {groups},
-            },
-        ]), getState);
-
-        return {data: {groups, totalGroupCount}};
-    };
+    return bindClientFunc({
+        clientFunc: async (param1, param2, param3, param4) => {
+            const result = await Client4.getGroupsAssociatedToTeam(param1, param2, param3, param4);
+            return {groups: result.groups, totalGroupCount: result.total_group_count, teamID: param1};
+        },
+        onRequest: GroupTypes.GET_GROUPS_ASSOCIATED_TO_TEAM_REQUEST,
+        onSuccess: [GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM, GroupTypes.GET_GROUPS_ASSOCIATED_TO_TEAM_SUCCESS],
+        onFailure: GroupTypes.GET_GROUPS_ASSOCIATED_TO_TEAM_FAILURE,
+        params: [
+            teamID,
+            q,
+            page,
+            perPage,
+        ],
+    });
 }
