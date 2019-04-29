@@ -190,7 +190,8 @@ export function getAllGroupsAssociatedToTeam(teamID: string): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
         let groups: null;
         try {
-            groups = await Client4.getAllGroupsAssociatedToTeam(teamID);
+            const response = await Client4.getAllGroupsAssociatedToTeam(teamID);
+            groups = response.groups;
         } catch (error) {
             forceLogoutIfNecessary(error, dispatch, getState);
             dispatch(logError(error));
@@ -199,12 +200,8 @@ export function getAllGroupsAssociatedToTeam(teamID: string): ActionFunc {
 
         dispatch(batchActions([
             {
-                type: GroupTypes.RECEIVED_GROUPS_ASSOCIATED_TO_TEAM,
+                type: GroupTypes.RECEIVED_ALL_GROUPS_ASSOCIATED_TO_TEAM,
                 data: {groups, teamID},
-            },
-            {
-                type: GroupTypes.RECEIVED_GROUPS,
-                data: {groups},
             },
         ]), getState);
 
@@ -215,8 +212,11 @@ export function getAllGroupsAssociatedToTeam(teamID: string): ActionFunc {
 export function getGroupsAssociatedToTeam(teamID: string, q: string = '', page: number = 0, perPage: number = General.PAGE_SIZE_DEFAULT): ActionFunc {
     return async (dispatch: DispatchFunc, getState: GetStateFunc) => {
         let groups: null;
+        let totalGroupCount: null;
         try {
-            groups = await Client4.getGroupsAssociatedToTeam(teamID, q, page, perPage);
+            const response = await Client4.getGroupsAssociatedToTeam(teamID, q, page, perPage);
+            groups = response.groups;
+            totalGroupCount = response.total_group_count;
         } catch (error) {
             forceLogoutIfNecessary(error, dispatch, getState);
             dispatch(logError(error));
@@ -234,6 +234,6 @@ export function getGroupsAssociatedToTeam(teamID: string, q: string = '', page: 
             },
         ]), getState);
 
-        return {data: {groups}};
+        return {data: {groups, totalGroupCount}};
     };
 }

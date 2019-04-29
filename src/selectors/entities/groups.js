@@ -47,7 +47,8 @@ export function getGroupMembers(state, id) {
 }
 
 export function getTeamGroupIDSet(state, teamID) {
-    return state.entities.teams.groupsAssociatedToTeam[teamID] || new Set();
+    var arr = state.entities.teams.groupsAssociatedToTeam[teamID] || [];
+    return new Set(arr);
 }
 
 export const getGroupsNotAssociatedToTeam = createSelector(
